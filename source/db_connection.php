@@ -1,48 +1,38 @@
 <?php
 
 class ToanoConnect {
+    private static $configFile = 'config.ini';
+    private static $config;
+    private static $pdo;
 
-    private $configFile = 'config.ini';
-    private $config;
-
-    public function __construct()
-    {   
-        $this->connect();
-    }
-   
-    private function connect()
-    {
-        if (!file_exists($this->configFile)) {
-            throw new Exception("Configuration file not found: " . $this->configFile);
+    public static function connect() {
+        if (!file_exists(self::$configFile)) {
+            throw new Exception("Configuration file not found: " . self::$configFile);
         }
 
-        $this->config = parse_ini_file($this->configFile, true);
+        self::$config = parse_ini_file(self::$configFile, true);
 
-        if ($this->config === false) {
-            throw new Exception("Failed to parse configuration file: " . $this->configFile);
+        if (self::$config === false) {
+            throw new Exception("Failed to parse configuration file: " . self::$configFile);
         }
 
-        $dbHost = $this->config['database']['host'];
-        $dbPort = $this->config['database']['port'];
-        $dbName = $this->config['database']['name'];
-        $dbUser = $this->config['database']['user'];
-        $dbPassword = $this->config['database']['password'];
+        $dbHost = self::$config['database']['host'];
+        $dbPort = self::$config['database']['port'];
+        $dbName = self::$config['database']['name'];
+        $dbUser = self::$config['database']['user'];
+        $dbPassword = self::$config['database']['password'];
 
         try {
-            $dbh = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName", $dbUser, $dbPassword);
-            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
+            self::$pdo = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName", $dbUser, $dbPassword);
+            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "Database connection successful!";
+            return self::$pdo;
         } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+            throw new Exception("Connection failed: " . $e->getMessage());
         }
-        
     }
-    
-    public function getConfig()
-    {
-        return $this->config;
+
+    public static function getConfig() {
+        return self::$config;
     }
 }
-
-?>
