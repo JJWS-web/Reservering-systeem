@@ -3,34 +3,34 @@
 class UlidGenerator {
     private $ulid;
 
+    // Crockford Base32 encoding characters (excluding I, L, O, U)
+    private static $encoding = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+
     public function __construct()
     {
         $this->ulid = self::generate();
     }
 
-    # This line holds the characters used for encoding the ULID
-    private static $encoding = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-
-    # Returns the result of the generated ULID
+    // Generates a valid ULID by combining time and random components
     public static function generate() {
-        $time = microtime(true) * 1000;
+        $time = (int) (microtime(true) * 1000); // Current timestamp in milliseconds
         $timeChars = self::encodeTime($time);
         $randomChars = self::encodeRandom();
 
         return $timeChars . $randomChars;
     }
 
-    # Encodes the timestamp to a string
+    // Encodes the timestamp into 10 Base32 characters (48 bits)
     private static function encodeTime($time) {
         $chars = '';
         for ($i = 0; $i < 10; $i++) {
             $chars = self::$encoding[$time % 32] . $chars;
-            $time = (int)($time / 32);
+            $time = (int) ($time / 32);
         }
         return $chars;
     }
 
-    # Generates a random string and returns it
+    // Generates 16 Base32 characters (80 bits) of randomness
     private static function encodeRandom() {
         $chars = '';
         for ($i = 0; $i < 16; $i++) {
@@ -39,7 +39,7 @@ class UlidGenerator {
         return $chars;
     }
 
-    # Returns the generated ULID
+    // Returns the generated ULID
     public function getUlid() {
         return $this->ulid;
     }

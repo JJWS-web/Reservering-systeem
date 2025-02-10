@@ -1,19 +1,20 @@
 <?php
 
 require 'source/autoloader.php';
-require 'source/ulid.php';
+
 
 $autoloader = new ToanoLoader();
 
 try {
     // Manually load the database connection
-    $autoloader->loadConnection();
+    // $autoloader->loadDBConnection(); 
 
-    $autoloader->loader();
+    $autoloader->app_Loader();
+    $autoloader->source_Loader();
 
     // Create a new user
     $user = new ToanoUser();
-    $result = $user->create('jj.wesje@gmail.com', 'password123');
+    $result = $user->create('yaboypforlife@gmail.com', 'password123');
 
     if ($result) {
         echo "User inserted successfully.\n";
