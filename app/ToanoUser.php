@@ -4,23 +4,23 @@
 
 class ToanoUser {
     private $pdo;
+    
 
     public function __construct()
     {
-       
         $this->pdo = ToanoConnect::connect();
+       
     }
 
     public function create($mail, $password) {
         $sql = "INSERT INTO user (mail, password) VALUES (:mail, :password)";
         $stmt = $this->pdo->prepare($sql);
-
         $stmt->bindParam(':mail', $mail);
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // Secure password hashing
         $stmt->bindParam(':password', $hashedPassword);
 
         if ($stmt->execute()) {
-            return true;
+            return $mail; // Return the mail of the newly created user
         } else {
             error_log("Failed to create user: " . implode(", ", $stmt->errorInfo()));
             return false;
@@ -86,3 +86,5 @@ class ToanoUser {
         return false;
     }
 }
+
+

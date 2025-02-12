@@ -1,30 +1,31 @@
 <?php
 
-require 'source/ulid.php';
+require_once 'source/ulid.php';
 
 class ToanoPerson {
     private $pdo;
+    private $ulidGenerator;
 
     public function __construct()
     {
         $this->pdo = ToanoConnect::connect();
+        $this->ulidGenerator = new UlidGenerator();
     }
 
-    public function create($firstname, $lastname, $phonenumber, $preposition = null) {
+    public function create($firstname, $preposition, $lastname, $phonenumber) {
         // Generate a ULID
-        $ulidGenerator = new UlidGenerator();
-        $ulid = $ulidGenerator->getUlid();
+        $personUlid = $this->ulidGenerator->getUlid();
 
         $sql = "INSERT INTO person (ulid, firstname, preposition, lastname, phonenumber) VALUES (:ulid, :firstname, :preposition, :lastname, :phonenumber)";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $ulid);
+        $stmt->bindParam(':ulid', $personUlid);
         $stmt->bindParam(':firstname', $firstname);
         $stmt->bindParam(':preposition', $preposition);
         $stmt->bindParam(':lastname', $lastname);
         $stmt->bindParam(':phonenumber', $phonenumber);
 
         if ($stmt->execute()) {
-            return true;
+            return $personUlid; 
         } else {
             error_log("Failed to create person: " . implode(", ", $stmt->errorInfo()));
             return false;

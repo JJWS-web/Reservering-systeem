@@ -4,20 +4,21 @@ require_once 'source/ulid.php';
 
 class ToanoReservation {
     private $pdo;
+    private $ulidGenerator;
 
     public function __construct()
     {
         $this->pdo = ToanoConnect::connect();
+        $this->ulidGenerator = new UlidGenerator();
     }
 
     public function create($customerUlid, $start, $end, $title, $description) {
-        // Generate a ULID
-        $ulidGenerator = new UlidGenerator();
-        $ulid = $ulidGenerator->getUlid();
+        // Generate a ULID for the reservation
+        $reservationUlid = $this->ulidGenerator->getUlid();
 
         $sql = "INSERT INTO reservation (ulid, customer_ulid, start, end, title, description) VALUES (:ulid, :customer_ulid, :start, :end, :title, :description)";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $ulid);
+        $stmt->bindParam(':ulid', $reservationUlid);
         $stmt->bindParam(':customer_ulid', $customerUlid);
         $stmt->bindParam(':start', $start);
         $stmt->bindParam(':end', $end);
@@ -25,7 +26,7 @@ class ToanoReservation {
         $stmt->bindParam(':description', $description);
 
         if ($stmt->execute()) {
-            return true; 
+            return $reservationUlid; // Return the ULID of the newly created reservation
         } else {
             error_log("Failed to create reservation: " . implode(", ", $stmt->errorInfo()));
             return false;
