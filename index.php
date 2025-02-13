@@ -2,42 +2,44 @@
 
 require_once 'source/autoloader.php';
 
-
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 try {
     // Initialize the autoloader
     $autoloader = new ToanoLoader();
 
-    // Start a database transaction
-    $pdo = ToanoConnect::connect();
-    $pdo->beginTransaction();
-
     // Create a new customer and reservation
-    $customer = new ToanoCustomer();
-    $result = $customer->createCustomerReservation(
-        'Jayden', 'van', 'Do', '1234567890', 'test1234@gmail.com', 'password123',
+    $customer = new ToanoCustomer(); 
+    $customerResult = $customer->createPersonUserCustomer(
+        'Jayden', 'van', 'Do', '1234567890', 'test@gmail.com', 'password123'
+    ); 
+
+    if (!$customerResult['success']) {
+        throw new Exception("Failed to insert customer: " . $customerResult['message']);
+    } 
+
+    echo "✅ Customer inserted successfully with ULID: " . $customerResult['customerUlid'] . "\n";
+
+    $customerUlid = $customerResult['customerUlid'];
+
+    $reservationResult = $customer->createCustomerReservation(
+        $customerUlid,
         '2023-10-01 10:00:00',
         '2023-10-01 12:00:00',
-        'cool',
+        'coolss',
         'Project discussion'
-    );
+    ); 
 
-    if (!$result['success']) {
-        throw new Exception("Failed to insert reservation.");
+    if (!$reservationResult['success']) {
+        throw new Exception("Failed to insert reservation: " . $reservationResult['message']);
     }
 
-    echo "✅ Reservation inserted successfully with ULID: " . $result['reservationUlid'] . "\n";
-    echo "✅ Customer ULID: " . $result['customerUlid'] . "\n";
-
-    // Commit the transaction
-    $pdo->commit();
+    echo "✅ Reservation inserted successfully with ULID: " . $reservationResult['reservationUlid'] . "\n";
+    echo "✅ Customer ULID: " . $reservationResult['customerUlid'] . "\n";
 
 } catch (Exception $e) {
-    // Rollback the transaction in case of an error
-    $pdo->rollBack();
-    echo "❌ " . $e->getMessage();
+    if (strpos($e->getMessage(), 'Email already exists') !== false) {
+        echo "❌ Duplicate email error: " . $e->getMessage();
+    } else {
+        echo "❌ " . $e->getMessage();
+    }
 }
 ?>

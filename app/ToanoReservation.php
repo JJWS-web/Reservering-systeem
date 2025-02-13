@@ -13,22 +13,33 @@ class ToanoReservation {
     }
 
     public function create($customerUlid, $start, $end, $title, $description) {
-        // Generate a ULID for the reservation
-        $reservationUlid = $this->ulidGenerator->getUlid();
+        try {
+            $this->pdo->beginTransaction(); // Start transaction
 
-        $sql = "INSERT INTO reservation (ulid, customer_ulid, start, end, title, description) VALUES (:ulid, :customer_ulid, :start, :end, :title, :description)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $reservationUlid);
-        $stmt->bindParam(':customer_ulid', $customerUlid);
-        $stmt->bindParam(':start', $start);
-        $stmt->bindParam(':end', $end);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':description', $description);
+            // Generate a ULID for the reservation
+            $reservationUlid = $this->ulidGenerator->getUlid();
 
-        if ($stmt->execute()) {
-            return $reservationUlid; // Return the ULID of the newly created reservation
-        } else {
-            error_log("Failed to create reservation: " . implode(", ", $stmt->errorInfo()));
+            $sql = "INSERT INTO reservation (ulid, customer_ulid, start, end, title, description) 
+                    VALUES (:ulid, :customer_ulid, :start, :end, :title, :description)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ulid', $reservationUlid);
+            $stmt->bindParam(':customer_ulid', $customerUlid);
+            $stmt->bindParam(':start', $start);
+            $stmt->bindParam(':end', $end);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':description', $description);
+
+            if ($stmt->execute()) {
+                $this->pdo->commit(); // Commit transaction
+                return $reservationUlid; 
+            } else {
+                $this->pdo->rollBack(); // Rollback transaction on failure
+                error_log("Failed to create reservation: " . implode(", ", $stmt->errorInfo()));
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log($e->getMessage());
             return false;
         }
     }
@@ -53,32 +64,54 @@ class ToanoReservation {
     }
 
     public function update($ulid, $customerUlid, $start, $end, $title, $description) {
-        $sql = "UPDATE reservation SET customer_ulid = :customer_ulid, start = :start, end = :end, title = :title, description = :description WHERE ulid = :ulid";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $ulid);
-        $stmt->bindParam(':customer_ulid', $customerUlid);
-        $stmt->bindParam(':start', $start);
-        $stmt->bindParam(':end', $end);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':description', $description);
+        try {
+            $this->pdo->beginTransaction(); // Start transaction
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            error_log("Failed to update reservation: " . implode(", ", $stmt->errorInfo()));
+            $sql = "UPDATE reservation 
+                    SET customer_ulid = :customer_ulid, start = :start, end = :end, title = :title, description = :description 
+                    WHERE ulid = :ulid";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ulid', $ulid);
+            $stmt->bindParam(':customer_ulid', $customerUlid);
+            $stmt->bindParam(':start', $start);
+            $stmt->bindParam(':end', $end);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':description', $description);
+
+            if ($stmt->execute()) {
+                $this->pdo->commit(); // Commit transaction
+                return true;
+            } else {
+                $this->pdo->rollBack(); // Rollback transaction on failure
+                error_log("Failed to update reservation: " . implode(", ", $stmt->errorInfo()));
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log($e->getMessage());
             return false;
         }
     }
 
     public function delete($ulid) {
-        $sql = "DELETE FROM reservation WHERE ulid = :ulid";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $ulid);
+        try {
+            $this->pdo->beginTransaction(); // Start transaction
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            error_log("Failed to delete reservation: " . implode(", ", $stmt->errorInfo()));
+            $sql = "DELETE FROM reservation WHERE ulid = :ulid";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ulid', $ulid);
+
+            if ($stmt->execute()) {
+                $this->pdo->commit(); // Commit transaction
+                return true;
+            } else {
+                $this->pdo->rollBack(); // Rollback transaction on failure
+                error_log("Failed to delete reservation: " . implode(", ", $stmt->errorInfo()));
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log($e->getMessage());
             return false;
         }
     }

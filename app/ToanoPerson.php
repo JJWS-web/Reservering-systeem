@@ -13,21 +13,30 @@ class ToanoPerson {
     }
 
     public function create($firstname, $preposition, $lastname, $phonenumber) {
-        // Generate a ULID
-        $personUlid = $this->ulidGenerator->getUlid();
+        try {
+            $this->pdo->beginTransaction();
 
-        $sql = "INSERT INTO person (ulid, firstname, preposition, lastname, phonenumber) VALUES (:ulid, :firstname, :preposition, :lastname, :phonenumber)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $personUlid);
-        $stmt->bindParam(':firstname', $firstname);
-        $stmt->bindParam(':preposition', $preposition);
-        $stmt->bindParam(':lastname', $lastname);
-        $stmt->bindParam(':phonenumber', $phonenumber);
+            // Generate a ULID
+            $personUlid = $this->ulidGenerator->getUlid();
 
-        if ($stmt->execute()) {
-            return $personUlid; 
-        } else {
-            error_log("Failed to create person: " . implode(", ", $stmt->errorInfo()));
+            $sql = "INSERT INTO person (ulid, firstname, preposition, lastname, phonenumber) 
+                    VALUES (:ulid, :firstname, :preposition, :lastname, :phonenumber)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ulid', $personUlid);
+            $stmt->bindParam(':firstname', $firstname);
+            $stmt->bindParam(':preposition', $preposition);
+            $stmt->bindParam(':lastname', $lastname);
+            $stmt->bindParam(':phonenumber', $phonenumber);
+
+            if ($stmt->execute()) {
+                $this->pdo->commit(); 
+                return $personUlid; 
+            } else {
+                throw new Exception("Failed to create person: " . implode(", ", $stmt->errorInfo()));
+            }
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log($e->getMessage());
             return false;
         }
     }
@@ -39,12 +48,7 @@ class ToanoPerson {
 
         if ($stmt->execute()) {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($result) {
-                return $result;
-            } else {
-                error_log("Person not found with ULID: $ulid");
-                return null;
-            }
+            return $result ?: null;
         }
 
         error_log("Failed to read person: " . implode(", ", $stmt->errorInfo()));
@@ -52,31 +56,47 @@ class ToanoPerson {
     }
 
     public function update($ulid, $firstname, $lastname, $phonenumber, $preposition = null) {
-        $sql = "UPDATE person SET firstname = :firstname, preposition = :preposition, lastname = :lastname, phonenumber = :phonenumber WHERE ulid = :ulid";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $ulid);
-        $stmt->bindParam(':firstname', $firstname);
-        $stmt->bindParam(':preposition', $preposition);
-        $stmt->bindParam(':lastname', $lastname);
-        $stmt->bindParam(':phonenumber', $phonenumber);
+        try {
+            $this->pdo->beginTransaction();
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            error_log("Failed to update person: " . implode(", ", $stmt->errorInfo()));
+            $sql = "UPDATE person SET firstname = :firstname, preposition = :preposition, lastname = :lastname, phonenumber = :phonenumber WHERE ulid = :ulid";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ulid', $ulid);
+            $stmt->bindParam(':firstname', $firstname);
+            $stmt->bindParam(':preposition', $preposition);
+            $stmt->bindParam(':lastname', $lastname);
+            $stmt->bindParam(':phonenumber', $phonenumber);
+
+            if ($stmt->execute()) {
+                $this->pdo->commit();
+                return true;
+            } else {
+                throw new Exception("Failed to update person: " . implode(", ", $stmt->errorInfo()));
+            }
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log($e->getMessage());
             return false;
         }
     }
 
     public function delete($ulid) {
-        $sql = "DELETE FROM person WHERE ulid = :ulid";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':ulid', $ulid);
+        try {
+            $this->pdo->beginTransaction();
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            error_log("Failed to delete person: " . implode(", ", $stmt->errorInfo()));
+            $sql = "DELETE FROM person WHERE ulid = :ulid";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ulid', $ulid);
+
+            if ($stmt->execute()) {
+                $this->pdo->commit();
+                return true;
+            } else {
+                throw new Exception("Failed to delete person: " . implode(", ", $stmt->errorInfo()));
+            }
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log($e->getMessage());
             return false;
         }
     }

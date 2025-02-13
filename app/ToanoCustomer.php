@@ -78,47 +78,53 @@ class ToanoCustomer {
     }
 
     public function createPersonUserCustomer($firstname, $preposition, $lastname, $phonenumber, $mail, $password) {
-        $person = new ToanoPerson();
-        $personUlid = $person->create($firstname, $preposition, $lastname, $phonenumber);
+        try {
+            $this->pdo->beginTransaction();
 
-        if (!$personUlid) {
-            return false;
+            $person = new ToanoPerson();
+            $personUlid = $person->create($firstname, $preposition, $lastname, $phonenumber);
+
+            if (!$personUlid) {
+                throw new Exception("Failed to create person.");
+            }
+
+            $user = new ToanoUser();
+            $userMail = $user->create($mail, $password);
+
+            if (!$userMail) {
+                throw new Exception("Failed to create user.");
+            }
+
+            $customerUlid = $this->create($personUlid, $userMail);
+            if (!$customerUlid) {
+                throw new Exception("Failed to create customer.");
+            }
+
+            $this->pdo->commit();
+
+            return [
+                'success' => true,
+                'customerUlid' => $customerUlid
+            ];
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log($e->getMessage());
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
         }
-
-        $user = new ToanoUser();
-        $userMail = $user->create($mail, $password);
-
-        if (!$userMail) {
-            return false;
-        }
-
-        $customerUlid = $this->create($personUlid, $userMail);
-        if (!$customerUlid) {
-            return false;
-        }
-
-        return [
-            'success' => true,
-            'customerUlid' => $customerUlid
-        ];
     }
 
-    public function createCustomerReservation($firstname, $preposition, $lastname, $phonenumber, $mail, $password, $start, $end, $title, $description) {
-        // Create a new customer with person and user
-        $result = $this->createPersonUserCustomer($firstname, $preposition, $lastname, $phonenumber, $mail, $password);
-
-        if (!$result['success']) {
-            return false;
-        }
-
-        $customerUlid = $result['customerUlid'];
-
-        // Create a new reservation for the customer
+    public function createCustomerReservation($customerUlid, $start, $end, $title, $description) {
         $reservation = new ToanoReservation();
         $reservationUlid = $reservation->create($customerUlid, $start, $end, $title, $description);
 
         if (!$reservationUlid) {
-            return false;
+            return [
+                'success' => false,
+                'message' => 'Failed to create reservation.'
+            ];
         }
 
         return [
