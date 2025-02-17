@@ -95,17 +95,17 @@ class ToanoReservation {
 
     public function delete($ulid) {
         try {
-            $this->pdo->beginTransaction(); // Start transaction
+            $this->pdo->beginTransaction();
 
             $sql = "DELETE FROM reservation WHERE ulid = :ulid";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':ulid', $ulid);
 
             if ($stmt->execute()) {
-                $this->pdo->commit(); // Commit transaction
+                $this->pdo->commit();
                 return true;
             } else {
-                $this->pdo->rollBack(); // Rollback transaction on failure
+                $this->pdo->rollBack(); 
                 error_log("Failed to delete reservation: " . implode(", ", $stmt->errorInfo()));
                 return false;
             }

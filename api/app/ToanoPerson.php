@@ -51,8 +51,6 @@ class ToanoPerson {
             return $result ?: null;
         }
 
-        error_log("Failed to read person: " . implode(", ", $stmt->errorInfo()));
-        return null;
     }
 
     public function update($ulid, $firstname, $lastname, $phonenumber, $preposition = null) {

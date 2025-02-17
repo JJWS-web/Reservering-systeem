@@ -31,6 +31,14 @@ class ToanoUser {
         }
     }
 
+    public function read($mail) {
+        $sql = "SELECT * FROM user WHERE mail = :mail";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':mail', $mail);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function update($mail, $password) {
         try {
             $this->pdo->beginTransaction();
@@ -82,4 +90,21 @@ class ToanoUser {
         return $stmt->fetchColumn() > 0;
     }
     
+    public function login($mail, $password) {
+        $user = $this->read($mail);
+
+        if ($user && password_verify($password, $user['password'])) {
+            session_start();
+            $_SESSION['user'] = $user;
+            return [
+                'success' => true,
+                'message' => 'Login successful.'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Invalid email or password.'
+            ];
+        }
+    }
 }
