@@ -1,24 +1,25 @@
 <?php
 
+//header('Content-Type: application/json');
+
 require_once 'source/autoloader.php';
 
 try {
-    // Initialize the autoloader
+   
     $autoloader = new ToanoLoader();
-
-    // Create a new user instance
+    
     $user = new ToanoUser();
 
-    // Attempt to log in
-    $loginResult = $user->login('heysss12a@gmail.com', 'password123');
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    if ($loginResult['success']) {
-        echo "✅ " . $loginResult['message'] . "\n";
-    } else {
-        throw new Exception($loginResult['message']);
+    if (!isset($input['mail']) || !isset($input['password'])) {
+        throw new Exception("Missing email or password");
     }
 
+    $loginResult = $user->login($input['mail'], $input['password']);
+
+
+    echo json_encode($loginResult);
 } catch (Exception $e) {
-    echo "❌ " . $e->getMessage();
+    echo json_encode(["success" => false, "message" => $e->getMessage()]);
 }
-?>

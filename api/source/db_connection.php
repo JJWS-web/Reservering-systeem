@@ -25,7 +25,7 @@ class ToanoConnect {
         try {
             self::$pdo = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName", $dbUser, $dbPassword);
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Database connection successful!";
+           // echo "Database connection successful!";
             return self::$pdo;
         } catch (PDOException $e) {
             throw new Exception("Connection failed: " . $e->getMessage());

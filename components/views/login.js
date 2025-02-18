@@ -9,11 +9,11 @@ export default class login {
         const form = document.querySelector("#loginForm");
         form.addEventListener("submit", (event) => {
             event.preventDefault();
-            const username = document.querySelector("#username").value;
+            const mail = document.querySelector("#mail").value;
             const password = document.querySelector("#password").value;
             
            
-            this.controller.handleLogin(username, password);
+            this.controller.handleLogin(mail, password);
         });
     }
 

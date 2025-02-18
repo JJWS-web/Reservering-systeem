@@ -5,13 +5,14 @@ export default class loginController {
         this.model = new LoginModel();
     }
 
-    async handleLogin(username, password) {
+    async handleLogin(mail, password) {
         try {
-            const response = await this.model.login(username, password);
+            const response = await this.model.login(mail, password);
             console.log("Login successful", response);
-            window.location.hash = "/2fa"; // Redirect to another page
+           // window.location.hash = "/2fa"; 
         } catch (error) {
             document.querySelector("#errorMessage").textContent = "Login failed!";
+            console.log("hi");
         }
     }
 }
