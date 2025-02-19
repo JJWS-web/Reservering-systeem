@@ -1,8 +1,8 @@
-import LoginController from "../controllers/logincontroller.js";
+import loginController from "../controllers/logincontroller.js";
 
 export default class login {
     constructor() {
-        this.controller = new LoginController();
+        this.controller = new loginController();
     }
 
     bind() {
@@ -25,6 +25,7 @@ export default class login {
                     <input type="text" id="mail" placeholder="Mail" required />
                     <input type="password" id="password" placeholder="Password" required />
                     <button type="submit">Login</button>
+                    <button type="button" onclick="window.location.hash = '#/register';">Register</button> 
                 </form>
                 <p id="errorMessage"></p>
             </div>

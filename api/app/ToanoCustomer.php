@@ -1,6 +1,6 @@
 <?php
 
-require_once 'source/ulid.php';
+require_once '../source/ulid.php';
 
 class ToanoCustomer {
     private $pdo;
@@ -77,7 +77,7 @@ class ToanoCustomer {
         }
     }
 
-    public function createPersonUserCustomer($firstname, $preposition, $lastname, $phonenumber, $mail, $password) {
+    public function register($firstname, $preposition, $lastname, $phonenumber, $mail, $password) {
         try {
             $this->pdo->beginTransaction();
 

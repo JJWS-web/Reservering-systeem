@@ -1,4 +1,4 @@
-<?php
+3<?php
 
 class ToanoLoader {
     public function __construct() {

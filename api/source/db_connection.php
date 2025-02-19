@@ -1,7 +1,7 @@
 <?php
 
 class ToanoConnect {
-    private static $configFile = 'config.ini';
+    private static $configFile = __DIR__ . '/../config.ini';
     private static $config;
     private static $pdo;
 

@@ -1,8 +1,8 @@
-import LoginModel from "../models/loginmodel.js";
+import loginModel from "../models/loginmodel.js";
 
 export default class loginController {
     constructor() {
-        this.model = new LoginModel();
+        this.model = new loginModel();
     }
 
     async handleLogin(mail, password) {
