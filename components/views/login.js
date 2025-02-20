@@ -11,7 +11,7 @@ export default class login {
             event.preventDefault();
             const mail = document.querySelector("#mail").value;
             const password = document.querySelector("#password").value;
-            
+           
            
             this.controller.handleLogin(mail, password);
         });
