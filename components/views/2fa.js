@@ -6,7 +6,7 @@ export default class TwoFactorAuth {
     }
 
     bind() {
-        const form = document.querySelector("#2faForm");
+        const form = document.querySelector("#Form");
         form.addEventListener("submit", (event) => {
             event.preventDefault();
             const code = [
@@ -15,7 +15,7 @@ export default class TwoFactorAuth {
                 document.querySelector("#digit3").value,
                 document.querySelector("#digit4").value
             ].join('');
-            this.controller.handle2FA(code);
+            this.controller.handleTwoFactorAuth(code);
         });
     }
 
@@ -23,7 +23,7 @@ export default class TwoFactorAuth {
         return `
             <div>
                 <h2>Two-Factor Authentication</h2>
-                <form id="2faForm">
+                <form id="Form">
                     <input type="text" id="digit1" maxlength="1" required />
                     <input type="text" id="digit2" maxlength="1" required />
                     <input type="text" id="digit3" maxlength="1" required />

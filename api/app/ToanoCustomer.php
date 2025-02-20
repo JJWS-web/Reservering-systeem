@@ -13,7 +13,6 @@ class ToanoCustomer {
     }
 
     public function create($personUlid, $userMail) {
-        // Generate a ULID for the customer
         $customerUlid = $this->ulidGenerator->getUlid();
 
         $sql = "INSERT INTO customer (ulid, person_ulid, user_mail) VALUES (:ulid, :person_ulid, :user_mail)";

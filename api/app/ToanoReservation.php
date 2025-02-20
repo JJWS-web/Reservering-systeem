@@ -14,9 +14,9 @@ class ToanoReservation {
 
     public function create($customerUlid, $start, $end, $title, $description) {
         try {
-            $this->pdo->beginTransaction(); // Start transaction
+            $this->pdo->beginTransaction();
 
-            // Generate a ULID for the reservation
+            
             $reservationUlid = $this->ulidGenerator->getUlid();
 
             $sql = "INSERT INTO reservation (ulid, customer_ulid, start, end, title, description) 
@@ -30,10 +30,10 @@ class ToanoReservation {
             $stmt->bindParam(':description', $description);
 
             if ($stmt->execute()) {
-                $this->pdo->commit(); // Commit transaction
+                $this->pdo->commit(); 
                 return $reservationUlid; 
             } else {
-                $this->pdo->rollBack(); // Rollback transaction on failure
+                $this->pdo->rollBack(); 
                 error_log("Failed to create reservation: " . implode(", ", $stmt->errorInfo()));
                 return false;
             }
@@ -65,7 +65,7 @@ class ToanoReservation {
 
     public function update($ulid, $customerUlid, $start, $end, $title, $description) {
         try {
-            $this->pdo->beginTransaction(); // Start transaction
+            $this->pdo->beginTransaction(); 
 
             $sql = "UPDATE reservation 
                     SET customer_ulid = :customer_ulid, start = :start, end = :end, title = :title, description = :description 
@@ -79,10 +79,10 @@ class ToanoReservation {
             $stmt->bindParam(':description', $description);
 
             if ($stmt->execute()) {
-                $this->pdo->commit(); // Commit transaction
+                $this->pdo->commit(); 
                 return true;
             } else {
-                $this->pdo->rollBack(); // Rollback transaction on failure
+                $this->pdo->rollBack();
                 error_log("Failed to update reservation: " . implode(", ", $stmt->errorInfo()));
                 return false;
             }
