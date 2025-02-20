@@ -82,6 +82,7 @@ class ToanoUser {
             return false;
         }
     }
+
     public function emailExists($mail) {
         $sql = "SELECT COUNT(*) FROM user WHERE mail = :mail";
         $stmt = $this->pdo->prepare($sql);
@@ -89,7 +90,7 @@ class ToanoUser {
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
-    
+
     public function login($mail, $password) {
         $user = $this->read($mail);
 

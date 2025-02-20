@@ -1,6 +1,6 @@
 <?php
 
-require_once 'source/ulid.php';
+require_once '../source/ulid.php';
 
 class ToanoPerson {
     private $pdo;
@@ -12,31 +12,26 @@ class ToanoPerson {
         $this->ulidGenerator = new UlidGenerator();
     }
 
-    public function create($firstname, $preposition, $lastname, $phonenumber) {
+    public function create($firstName, $preposition, $lastName, $phoneNumber) {
         try {
-            $this->pdo->beginTransaction();
-
-            // Generate a ULID
             $personUlid = $this->ulidGenerator->getUlid();
 
             $sql = "INSERT INTO person (ulid, firstname, preposition, lastname, phonenumber) 
                     VALUES (:ulid, :firstname, :preposition, :lastname, :phonenumber)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':ulid', $personUlid);
-            $stmt->bindParam(':firstname', $firstname);
+            $stmt->bindParam(':firstname', $firstName);
             $stmt->bindParam(':preposition', $preposition);
-            $stmt->bindParam(':lastname', $lastname);
-            $stmt->bindParam(':phonenumber', $phonenumber);
+            $stmt->bindParam(':lastname', $lastName);
+            $stmt->bindParam(':phonenumber', $phoneNumber);
 
             if ($stmt->execute()) {
-                $this->pdo->commit(); 
-                return $personUlid; 
+                return $personUlid;  
             } else {
                 throw new Exception("Failed to create person: " . implode(", ", $stmt->errorInfo()));
             }
         } catch (Exception $e) {
-            $this->pdo->rollBack();
-            error_log($e->getMessage());
+            error_log("❌ ToanoPerson::create ERROR: " . $e->getMessage());
             return false;
         }
     }
@@ -51,19 +46,21 @@ class ToanoPerson {
             return $result ?: null;
         }
 
+        error_log("Failed to read person: " . implode(", ", $stmt->errorInfo()));
+        return null;
     }
 
-    public function update($ulid, $firstname, $lastname, $phonenumber, $preposition = null) {
+    public function update($ulid, $firstName, $lastName, $phoneNumber, $preposition = null) {
         try {
             $this->pdo->beginTransaction();
 
             $sql = "UPDATE person SET firstname = :firstname, preposition = :preposition, lastname = :lastname, phonenumber = :phonenumber WHERE ulid = :ulid";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':ulid', $ulid);
-            $stmt->bindParam(':firstname', $firstname);
+            $stmt->bindParam(':firstname', $firstName);
             $stmt->bindParam(':preposition', $preposition);
-            $stmt->bindParam(':lastname', $lastname);
-            $stmt->bindParam(':phonenumber', $phonenumber);
+            $stmt->bindParam(':lastname', $lastName);
+            $stmt->bindParam(':phonenumber', $phoneNumber);
 
             if ($stmt->execute()) {
                 $this->pdo->commit();

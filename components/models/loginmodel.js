@@ -17,9 +17,11 @@ export default class LoginModel {
                 throw new Error(`Login request failed: ${response.status} ${response.statusText}`);
             }
 
-            const data = await response.json();
-            console.log("🟢 Server Response:", data);
-
+            const text = await response.text();
+            console.log("🔍 Raw Response:", text);
+            const data = JSON.parse(text); // Now manually parse
+            
+                
             return data;
         } catch (error) {
             console.error("❌ Login Error:", error);

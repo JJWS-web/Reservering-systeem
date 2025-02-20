@@ -5,14 +5,16 @@ export default class registerController {
         this.model = new registerModel();
     }
 
-    async handleRegister(firstName, preposition, Lastname, email, phonenumber, password) {
+    async handleRegister({ firstname, preposition, lastname, mail, phonenumber, password }) {
         try {
-            const response = await this.model.register(firstName, preposition, Lastname, email, phonenumber, password);
-            console.log("Register succesfull", response);
-           // window.location.hash = "/2fa"; 
+            const response = await this.model.register(firstname, preposition, lastname, mail, phonenumber, password);
+            console.log("Register successful", response);
+            // window.location.hash = "/2fa"; 
         } catch (error) {
             document.querySelector("#errorMessage").textContent = "Register failed!";
             console.log("hi");
         }
     }
+    
+    
 }

@@ -1,16 +1,16 @@
 export default class RegisterModel {
-    async register(firstName, preposition, lastName, mail, phonenumber, password) {
+    async register(firstname, preposition, lastname, mail, phonenumber, password) {
         console.log("Sending register request to backend...");
-        console.log("Payload:", { firstName, preposition, lastName, mail, phonenumber, password });
+        console.log("Payload:", { firstname, preposition, lastname, mail, phonenumber, password });
 
         try {
             const response = await fetch("http://localhost:8000/api/front/toanocustomerfront.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    firstname: firstName,
+                    firstname: firstname,
                     preposition: preposition,
-                    lastname: lastName,
+                    lastname: lastname,
                     mail: mail,
                     phonenumber: phonenumber,
                     password: password

@@ -23,7 +23,7 @@ class ToanoCustomer {
         $stmt->bindParam(':user_mail', $userMail);
 
         if ($stmt->execute()) {
-            return $customerUlid; // Return the ULID of the newly created customer
+            return $customerUlid; 
         } else {
             error_log("Failed to create customer: " . implode(", ", $stmt->errorInfo()));
             return false;
@@ -77,37 +77,37 @@ class ToanoCustomer {
         }
     }
 
-    public function register($firstname, $preposition, $lastname, $phonenumber, $mail, $password) {
+    public function register($firstName, $preposition, $lastName, $phoneNumber, $mail, $password) {
         try {
             $this->pdo->beginTransaction();
-
+    
             $person = new ToanoPerson();
-            $personUlid = $person->create($firstname, $preposition, $lastname, $phonenumber);
-
+            $personUlid = $person->create($firstName, $preposition, $lastName, $phoneNumber);
+    
             if (!$personUlid) {
                 throw new Exception("Failed to create person.");
             }
-
+    
             $user = new ToanoUser();
             $userMail = $user->create($mail, $password);
-
+    
             if (!$userMail) {
                 throw new Exception("Failed to create user.");
             }
-
+    
             $customerUlid = $this->create($personUlid, $userMail);
             if (!$customerUlid) {
                 throw new Exception("Failed to create customer.");
             }
-
-            $this->pdo->commit();
-
+    
+            $this->pdo->commit();  
+    
             return [
                 'success' => true,
                 'customerUlid' => $customerUlid
             ];
         } catch (Exception $e) {
-            $this->pdo->rollBack();
+            $this->pdo->rollBack();  
             error_log($e->getMessage());
             return [
                 'success' => false,
@@ -115,7 +115,7 @@ class ToanoCustomer {
             ];
         }
     }
-
+    
     public function createCustomerReservation($customerUlid, $start, $end, $title, $description) {
         $reservation = new ToanoReservation();
         $reservationUlid = $reservation->create($customerUlid, $start, $end, $title, $description);
