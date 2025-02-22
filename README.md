@@ -1,0 +1,1 @@
+just run the index.html and it will show the login page. You can register with your email and password and use it to login, when you login it will bring you to the 2fa page you can find the 2fa code in the console log which you can find in inspect element.
