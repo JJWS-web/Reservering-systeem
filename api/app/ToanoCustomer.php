@@ -3,8 +3,17 @@
 require_once '../source/ulid.php';
 
 class ToanoCustomer {
+      /**
+     * declares a private property to store the pdo connection
+     * and an instance of the UlidGenerator class
+     */
     private $pdo;
     private $ulidGenerator;
+
+  /**
+     * when an instance of the class is made it calls the connect method from the ToanoConnect class
+     * and creates an instance of the UlidGenerator class
+     */
 
     public function __construct()
     {
@@ -12,6 +21,10 @@ class ToanoCustomer {
         $this->ulidGenerator = new UlidGenerator();
     }
 
+      /**
+     * creates a customer by generating a ulid and inserting the ulid, person ulid and user mail into the database
+     * and returns the ulid
+     */
     public function create($personUlid, $userMail) {
         $customerUlid = $this->ulidGenerator->getUlid();
 
@@ -28,6 +41,11 @@ class ToanoCustomer {
             return false;
         }
     }
+
+      /**
+     * reads a customer by selecting the customer from the database 
+     * and returns the result
+     */
 
     public function read($customerUlid) {
         $sql = "SELECT * FROM customer WHERE ulid = :ulid";
@@ -48,6 +66,11 @@ class ToanoCustomer {
         return null;
     }
 
+        /**
+         * updates a customer by updating the person ulid and user mail in the database
+         * and returns true if the update was successful
+         */
+
     public function update($customerUlid, $personUlid, $userMail) {
         $sql = "UPDATE customer SET person_ulid = :person_ulid, user_mail = :user_mail WHERE ulid = :ulid";
         $stmt = $this->pdo->prepare($sql);
@@ -63,6 +86,10 @@ class ToanoCustomer {
         }
     }
 
+        /**
+         * deletes a customer by deleting the customer from the database
+         * and returns true if the delete was successful
+         */
     public function delete($customerUlid) {
         $sql = "DELETE FROM customer WHERE ulid = :ulid";
         $stmt = $this->pdo->prepare($sql);
@@ -75,6 +102,13 @@ class ToanoCustomer {
             return false;
         }
     }
+
+        /**
+         * registers a customer by calling the create method from the ToanoPerson class
+         * and the create method from the ToanoUser class
+         * and the create method from this class
+         * and returns a json object with the result
+         */
 
     public function register($firstName, $preposition, $lastName, $phoneNumber, $mail, $password) {
         try {
@@ -115,6 +149,11 @@ class ToanoCustomer {
         }
     }
     
+      /**
+     * creates a customer reservation by calling the create method from the ToanoReservation class
+     * and returns a json object with the result
+     */
+
     public function createCustomerReservation($customerUlid, $start, $end, $title, $description) {
         $reservation = new ToanoReservation();
         $reservationUlid = $reservation->create($customerUlid, $start, $end, $title, $description);

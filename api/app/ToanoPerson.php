@@ -3,14 +3,28 @@
 require_once '../source/ulid.php';
 
 class ToanoPerson {
+
+       /**
+     * declares a private property to store the pdo connection
+     * and an instance of the UlidGenerator class
+     */
     private $pdo;
     private $ulidGenerator;
 
+    /**
+         * when an instance of the class is made it calls the connect method from the ToanoConnect class
+         * and creates an instance of the UlidGenerator class
+         */
     public function __construct()
     {
         $this->pdo = ToanoConnect::connect();
         $this->ulidGenerator = new UlidGenerator();
     }
+
+    /**
+     * creates a person by generating a ulid and inserting the ulid, first name, preposition, last name and phone number into the database
+     * and returns the ulid
+     */
 
     public function create($firstName, $preposition, $lastName, $phoneNumber) {
         try {
@@ -36,6 +50,11 @@ class ToanoPerson {
         }
     }
 
+    /**
+     * reads a person by selecting the person from the database 
+     * and returns the result
+     */
+
     public function read($ulid) {
         $sql = "SELECT * FROM person WHERE ulid = :ulid";
         $stmt = $this->pdo->prepare($sql);
@@ -49,6 +68,11 @@ class ToanoPerson {
         error_log("Failed to read person: " . implode(", ", $stmt->errorInfo()));
         return null;
     }
+
+    /**
+     * updates a person by updating the first name, preposition, last name and phone number in the database
+     * and returns true if the update was successful
+     */
 
     public function update($ulid, $firstName, $lastName, $phoneNumber, $preposition = null) {
         try {
@@ -75,6 +99,11 @@ class ToanoPerson {
         }
     }
 
+    /**
+     * deletes a person by deleting the person from the database
+     * and returns true if the delete was successful
+     */
+    
     public function delete($ulid) {
         try {
             $this->pdo->beginTransaction();

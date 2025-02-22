@@ -3,6 +3,14 @@
 
 require_once __DIR__ . '/../source/autoloader.php';
 
+  /**
+     * this file is responsible for the registration of the user by calling
+     * the register function from the ToanoCustomer class.
+     * the input is received from the user and is checked if it is empty
+     * if it is empty an exception is thrown.
+     * json is used to encode the input and the result of the register function
+     * is returned as a json object.
+     */
 try {
     $autoloader = new ToanoLoader();
     $customer = new ToanoCustomer();

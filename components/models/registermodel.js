@@ -1,4 +1,8 @@
 export default class RegisterModel {
+      /**
+     * sends a post request to the backend with the user data as parameters
+     * and return the response of the backend
+     */
     async register(firstname, preposition, lastname, mail, phonenumber, password) {
         console.log("Sending register request to backend...");
         console.log("Payload:", { firstname, preposition, lastname, mail, phonenumber, password });

@@ -1,10 +1,17 @@
 import loginModel from "../models/loginmodel.js";
 
+  /**
+     *Initializes a new instance of the login controller and assigns it to the controller property of the login class
+     */
 export default class loginController {
     constructor() {
         this.model = new loginModel();
     }
 
+      /**
+     * this function takes in the mail and password of the user
+     * and sends it to the login model to be validated
+     */
     async handleLogin(mail, password) {
         try {
             const response = await this.model.login(mail, password);
@@ -22,6 +29,9 @@ export default class loginController {
         }
     }
     
+      /**
+     * this functions takes the entered 2fa code and sends it to the login model to be validated
+     */
     async handleTwoFactorAuth(code) {
         try {
             const response = await this.model.validate2FACode(code);

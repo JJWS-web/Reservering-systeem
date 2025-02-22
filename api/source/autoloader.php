@@ -1,6 +1,9 @@
 3<?php
 
 class ToanoLoader {
+      /**
+     * when an instance of the class is made it calls the 2 methods
+     */
     public function __construct() {
         $this->registerClassLoader();
         $this->loadDBConnection();

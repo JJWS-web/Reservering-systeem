@@ -3,15 +3,27 @@
 require_once '../source/ulid.php';
 
 class ToanoReservation {
+       /**
+     * declares a private property to store the pdo connection
+     * and an instance of the UlidGenerator class
+     */
     private $pdo;
     private $ulidGenerator;
 
+    /**
+         * when an instance of the class is made it calls the connect method from the ToanoConnect class
+         * and creates an instance of the UlidGenerator class
+         */
     public function __construct()
     {
         $this->pdo = ToanoConnect::connect();
         $this->ulidGenerator = new UlidGenerator();
     }
 
+    /**
+     * creates a reservation by generating a ulid and inserting the ulid, customer ulid, start, end, title and description into the database
+     * and returns the ulid
+     */
     public function create($customerUlid, $start, $end, $title, $description) {
         try {
             $this->pdo->beginTransaction();
@@ -44,6 +56,11 @@ class ToanoReservation {
         }
     }
 
+    /**
+     * reads a reservation by selecting the reservation from the database 
+     * and returns the result
+     */
+
     public function read($ulid) {
         $sql = "SELECT * FROM reservation WHERE ulid = :ulid";
         $stmt = $this->pdo->prepare($sql);
@@ -62,6 +79,11 @@ class ToanoReservation {
         error_log("Failed to read reservation: " . implode(", ", $stmt->errorInfo()));
         return null;
     }
+
+    /**
+     * updates a reservation by updating the customer ulid, start, end, title and description in the database
+     * and returns true if the update was successful
+     */
 
     public function update($ulid, $customerUlid, $start, $end, $title, $description) {
         try {
@@ -93,6 +115,11 @@ class ToanoReservation {
         }
     }
 
+    /**
+     * deletes a reservation by deleting the reservation from the database
+     * and returns true if the delete was successful
+     */
+    
     public function delete($ulid) {
         try {
             $this->pdo->beginTransaction();

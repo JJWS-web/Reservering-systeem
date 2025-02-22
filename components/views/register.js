@@ -1,10 +1,16 @@
 import registerController from "../controllers/registercontroller.js";
-
+  /**
+     * initializes a new instance of the register controller and assigns it to the controller
+     * property of the register class
+     */
 export default class Register {
     constructor() {
         this.controller = new registerController();
     }
 
+      /**
+     * sets up the event listeners for the register form
+     */
     bind() {
         const form = document.querySelector("#registerForm");
         form.addEventListener("submit", (event) => {
@@ -13,7 +19,7 @@ export default class Register {
             const firstname = document.querySelector("#firstName").value;
             const preposition = document.querySelector("#preposition").value || '';
             const lastname = document.querySelector("#lastName").value;
-            const mail = document.querySelector("#email").value; // Change email → mail
+            const mail = document.querySelector("#email").value; 
             const phonenumber = document.querySelector("#phonenumber").value;
             const password = document.querySelector("#password").value;
     
@@ -32,7 +38,10 @@ export default class Register {
         });
     }
     
-
+  /**
+     * render the register form and returns it as a string so it can be renderd
+     * in the browser
+     */
     render() {
         return `
             <div class="register-container">
@@ -45,6 +54,7 @@ export default class Register {
                     <input type="tel" id="phonenumber" placeholder="Phonenumber" required />
                     <input type="password" id="password" placeholder="Password" required />
                     <button type="submit">Register</button>
+                   <button type="button" onclick="window.location.hash = '#/login';">Login</button> 
                 </form>
                 <p id="errorMessage"></p>
             </div>

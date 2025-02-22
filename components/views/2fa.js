@@ -1,10 +1,16 @@
 import loginController from "../controllers/logincontroller.js";
 
 export default class TwoFactorAuth {
+      /**
+     * intializes a new instance of the login controller and assings it to the controller property of the login class
+     */ 
     constructor() {
         this.controller = new loginController();
     }
 
+      /**
+     * sets up the event listeners for the 2fa form
+     */
     bind() {
         const form = document.querySelector("#Form");
         form.addEventListener("submit", (event) => {
@@ -19,6 +25,9 @@ export default class TwoFactorAuth {
         });
     }
 
+      /**
+     * renders the 2fa form and returns it as a string so it can be renderderdd
+     */
     render() {
         return `
             <div>

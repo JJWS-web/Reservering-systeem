@@ -1,10 +1,17 @@
 import loginController from "../controllers/logincontroller.js";
 
 export default class login {
+      /**
+     * initializes a new instance  login controller and assigns it 
+     * to the controller propertt of login class
+     */
     constructor() {
         this.controller = new loginController();
     }
-
+    
+      /**
+     * sets up the event listeners for the login form
+     */
     bind() {
         const form = document.querySelector("#loginForm");
         form.addEventListener("submit", (event) => {
@@ -17,6 +24,9 @@ export default class login {
         });
     }
 
+      /**
+     * renders the login form and returns it as a string so it can be renderd
+     */
     render() {
         return `
             <div>

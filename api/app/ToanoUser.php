@@ -1,13 +1,23 @@
 <?php
 
 class ToanoUser {
+       /**
+     * declares a private property to store the pdo connection
+     */
     private $pdo;
 
+    /**
+     * when an instance of the class is made it calls the connect method from the ToanoConnect class
+     */
     public function __construct()
     {
         $this->pdo = ToanoConnect::connect();
     }
 
+    /**
+     * creates a user by inserting the mail and password into the database
+     * and returns the mail
+     */
     public function create($mail, $password) {
         try {
             $this->pdo->beginTransaction();
@@ -31,6 +41,10 @@ class ToanoUser {
         }
     }
 
+    /**
+     * reads a user by selecting the user from the database 
+     * and returns the result
+     */
     public function read($mail) {
         $sql = "SELECT * FROM user WHERE mail = :mail";
         $stmt = $this->pdo->prepare($sql);
@@ -39,6 +53,10 @@ class ToanoUser {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * updates a user by updating the password in the database
+     * and returns true if successful
+     */
     public function update($mail, $password) {
         try {
             $this->pdo->beginTransaction();
@@ -62,6 +80,11 @@ class ToanoUser {
         }
     }
 
+    /**
+     * deletes a user by deleting the user from the database
+     * and returns true if successful
+     */
+
     public function delete($mail) {
         try {
             $this->pdo->beginTransaction();
@@ -83,6 +106,11 @@ class ToanoUser {
         }
     }
 
+    /**
+     * checks if the mail exists in the database
+     * and returns true if it does
+     */
+
     public function emailExists($mail) {
         $sql = "SELECT COUNT(*) FROM user WHERE mail = :mail";
         $stmt = $this->pdo->prepare($sql);
@@ -91,6 +119,11 @@ class ToanoUser {
         return $stmt->fetchColumn() > 0;
     }
 
+    /**
+     * logs in a user by checking if the mail and password match
+     * and returns a json object with the result
+     */
+    
     public function login($mail, $password) {
         $user = $this->read($mail);
 
