@@ -44,20 +44,68 @@ export default class Register {
      */
     render() {
         return `
-            <div class="register-container">
-                <h2>Register</h2>
-                <form id="registerForm">
-                    <input type="text" id="firstName" placeholder="Firstname" required />
-                    <input type="text" id="preposition" placeholder="Preposition" />
-                    <input type="text" id="lastName" placeholder="Lastname" required />
-                    <input type="mail" id="email" placeholder="Email" required />
-                    <input type="tel" id="phonenumber" placeholder="Phonenumber" required />
-                    <input type="password" id="password" placeholder="Password" required />
-                    <button type="submit">Register</button>
-                   <button type="button" onclick="window.location.hash = '#/login';">Login</button> 
-                </form>
-                <p id="errorMessage"></p>
-            </div>
+         <style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #E3EEFF;
+    }
+    
+    .register-container {
+        background-color: #A8C7FF;
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+        border-radius: 5px;
+    }
+    
+    h2 {
+        margin-bottom: 15px;
+        color: #003366;
+    }
+    
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        background-color: #78A8FF;
+        border: none;
+        color: white;
+    }
+    
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #407BFF;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+    
+    p {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        margin-top: 10px;
+        color: #003366;
+    }
+</style>
+
+<div class="register-container">
+    <h2>Register</h2>
+    <form id="registerForm">
+        <input type="text" id="firstName" placeholder="Firstname" required />
+        <input type="text" id="preposition" placeholder="Preposition" />
+        <input type="text" id="lastName" placeholder="Lastname" required />
+        <input type="mail" id="email" placeholder="Email" required />
+        <input type="tel" id="phonenumber" placeholder="Phonenumber" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Register</button>
+    </form>
+</div>
+
         `;
     }
 }

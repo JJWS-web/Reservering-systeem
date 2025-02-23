@@ -45,7 +45,7 @@ class ToanoPerson {
                 throw new Exception("Failed to create person: " . implode(", ", $stmt->errorInfo()));
             }
         } catch (Exception $e) {
-            error_log("❌ ToanoPerson::create ERROR: " . $e->getMessage());
+            error_log(" ToanoPerson::create ERROR: " . $e->getMessage());
             return false;
         }
     }

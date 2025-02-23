@@ -30,17 +30,75 @@ export default class TwoFactorAuth {
      */
     render() {
         return `
-            <div>
-                <h2>Two-Factor Authentication</h2>
-                <form id="Form">
-                    <input type="text" id="digit1" maxlength="1" required />
-                    <input type="text" id="digit2" maxlength="1" required />
-                    <input type="text" id="digit3" maxlength="1" required />
-                    <input type="text" id="digit4" maxlength="1" required />
-                    <button type="submit">Verify</button>
-                </form>
-                <p id="errorMessage"></p>
-            </div>
+           <style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #E3EEFF;
+    }
+    
+    .twofa-container {
+        background-color: #A8C7FF;
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+        border-radius: 5px;
+    }
+    
+    h2 {
+        margin-bottom: 15px;
+        color: #003366;
+    }
+    
+    .input-group {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+    
+    input {
+        width: 40px;
+        padding: 10px;
+        background-color: #78A8FF;
+        border: none;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+    }
+    
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #407BFF;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+    
+    p {
+        font-size: 12px;
+        margin-top: 10px;
+        color: #003366;
+    }
+</style>
+
+<div class="twofa-container">
+    <h2>Two-Factor Authentication</h2>
+    <form id="Form">
+        <div class="input-group">
+            <input type="text" id="digit1" maxlength="1" required />
+            <input type="text" id="digit2" maxlength="1" required />
+            <input type="text" id="digit3" maxlength="1" required />
+            <input type="text" id="digit4" maxlength="1" required />
+        </div>
+        <button type="submit">Verify</button>
+    </form>
+    <p id="errorMessage"></p>
+</div>
+
         `;
     }
 }
