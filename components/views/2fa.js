@@ -1,11 +1,11 @@
-import loginController from "../controllers/logincontroller.js";
+import twoFactorAuthController from "../controllers/2facontroller.js";
 
 export default class TwoFactorAuth {
       /**
      * intializes a new instance of the login controller and assings it to the controller property of the login class
      */ 
     constructor() {
-        this.controller = new loginController();
+        this.controller = new twoFactorAuthController();
     }
 
       /**
