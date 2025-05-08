@@ -11,28 +11,27 @@ export default class TwoFactorAuthModel {
      * sends only the code to the backend (mail.php),
      * and logs relevant info.
      */
-    async generateAndSend2FACode() {
+    async generateAndSend2FACode(mail) {
         this.twoFACode = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
         sessionStorage.setItem("twoFACode", this.twoFACode);
+    
         console.log(`[2FA] Generated Code: ${this.twoFACode}`);
-
+    
         try {
             const response = await fetch("http://localhost:8000/api/mail/mail.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ twoFACode: this.twoFACode })
+                body: JSON.stringify({ twoFACode: this.twoFACode, mail })
             });
-
+    
             console.log(`[2FA] Response Status: ${response.status}`);
-
+    
             if (!response.ok) {
                 throw new Error(`[2FA] Failed to send code: ${response.status} ${response.statusText}`);
             }
-
+    
             const text = await response.text();
             console.log(`[2FA] Backend Response: ${text}`);
-            console.log("[2FA] Code successfully sent to backend");
-
             return { success: true, message: "2FA code generated and sent successfully!" };
         } catch (error) {
             console.error("[2FA] Error sending code:", error);
@@ -40,16 +39,17 @@ export default class TwoFactorAuthModel {
         }
     }
 
-    /**
-     * Validates the entered 2FA code with the generated one.
+      /**
+     * validates the enterd 2fa code with the generated 2fa code
+     * and returns a message based on the result
      */
-    async validate2FACode(enteredCode) {
-        this.twoFACode = sessionStorage.getItem("twoFACode");
-
+      async validate2FACode(enteredCode) {
+        this.twoFACode = sessionStorage.getItem("twoFACode"); 
+    
         if (!this.twoFACode) {
             return { success: false, message: "No 2FA code was generated!" };
         }
-
+    
         if (enteredCode === this.twoFACode) {
             sessionStorage.removeItem("twoFACode");
             return { success: true, message: "2FA code is correct!" };
@@ -57,4 +57,5 @@ export default class TwoFactorAuthModel {
             return { success: false, message: "Invalid 2FA code!" };
         }
     }
-}
+    
+}    

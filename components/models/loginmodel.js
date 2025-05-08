@@ -39,6 +39,8 @@ export default class LoginModel {
             throw error;
         }
     }
+   
+    
   /**
      * Generates a 4-digit 2FA code and stores it in the session storage and logs the generated code to the console
      */

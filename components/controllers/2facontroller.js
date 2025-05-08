@@ -1,9 +1,12 @@
 import twoFactorAuthModel from "../models/2famodel.js";
+import login from "../views/login.js";
+import loginController from "./logincontroller.js";
 
 export default class twoFactorAuthController {
        
         constructor() {
             this.model = new twoFactorAuthModel();
+            
         }  
 
          /**
@@ -11,6 +14,7 @@ export default class twoFactorAuthController {
      */
     async handleTwoFactorAuth(code) {
         try {
+
             const response = await this.model.validate2FACode(code);
 
             if (response.success) {

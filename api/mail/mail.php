@@ -9,32 +9,34 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$twoFACode = isset($data['twoFACode']) ? $data['twoFACode'] : null;
 
-if (!$twoFACode) {
-    die('Error: Missing 2FA code in the request.');
+$twoFACode = $data['twoFACode'] ?? null;
+$recipientEmail = $data['mail'] ?? null;
+
+if (!$twoFACode || !$recipientEmail) {
+    die('Error: Missing 2FA code or email in the request.');
 }
 
-$mail = new PHPMailer();
-$mail->isSMTP();
-$mail->SMTPDebug = SMTP::DEBUG_SERVER;
-$mail->Host = 'smtp.gmail.com';
-$mail->Port = 587;
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-$mail->SMTPAuth = true;
-$mail->Username = 'jj.wesje@gmail.com';
-$mail->Password = 'ajpy lrys xelb rtaj';
-$mail->setFrom('jj.wesje@gmail.com', 'Josia');
-$mail->addReplyTo('mrpatat12a@gmail.com', 'Jayden');
+$mailer = new PHPMailer();
+$mailer->isSMTP();
+$mailer->SMTPDebug = SMTP::DEBUG_SERVER;
+$mailer->Host = 'smtp.gmail.com';
+$mailer->Port = 587;
+$mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mailer->SMTPAuth = true;
+$mailer->Username = 'jj.wesje@gmail.com';
+$mailer->Password = 'ajpy lrys xelb rtaj'; // ⚠️ Use env variable instead
+$mailer->setFrom('jj.wesje@gmail.com', 'Josia');
+$mailer->addReplyTo('mrpatat12a@gmail.com', 'Jayden');
 
-$mail->addAddress('yaboypforlife@gmail.com', 'Fixed Recipient');
+$mailer->addAddress($recipientEmail, '2FA Recipient');
 
-$mail->Subject = 'Your 2FA Code';
-$mail->msgHTML("<h1>Your 2FA Code</h1><p>Your two-factor authentication code is: <strong>$twoFACode</strong></p>");
-$mail->AltBody = "Your two-factor authentication code is: $twoFACode";
+$mailer->Subject = 'Your 2FA Code';
+$mailer->msgHTML("<h1>Your 2FA Code</h1><p>Your two-factor authentication code is: <strong>$twoFACode</strong></p>");
+$mailer->AltBody = "Your two-factor authentication code is: $twoFACode";
 
-if (!$mail->send()) {
-    echo 'Mailer Error: ' . $mail->ErrorInfo;
+if (!$mailer->send()) {
+    echo 'Mailer Error: ' . $mailer->ErrorInfo;
 } else {
     echo 'Message sent!';
 }

@@ -13,22 +13,28 @@ export default class loginController {
      * this function takes in the mail and password of the user
      * and sends it to the login model to be validated
      */
-    async handleLogin(mail, password) {
+      async handleLogin(mail, password) {
         try {
             const response = await this.model.login(mail, password);
-            
             if (response.success) {
                 console.log("Login successful", response);
-                await this.twoFactorAuth.generateAndSend2FACode(mail);
-                window.location.hash = "/2fa"; 
+                const sendMail = await this.twoFactorAuth.generateAndSend2FACode(mail);
+                console.log("Send mail response:", sendMail);
+                window.location.hash = "/2fa";
             } else {
-                document.querySelector("#errorMessage").textContent = response.message || "Login failed!";
+                const errorElement = document.querySelector("#errorMessage");
+                if (errorElement) {
+                    errorElement.textContent = response.message || "Login failed!";
+                }
             }
         } catch (error) {
-            document.querySelector("#errorMessage").textContent = "An error occurred!";
+            const errorElement = document.querySelector("#errorMessage");
+            if (errorElement) {
+                errorElement.textContent = "An error occurred!";
+            }
             console.error("Login error:", error);
         }
     }
-    
-     
 }
+     
+
